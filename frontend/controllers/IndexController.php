@@ -2,6 +2,8 @@
 namespace frontend\controllers;
 
 use frontend\models\ResendVerificationEmailForm;
+use frontend\models\SwooleTest;
+use frontend\models\SwooleTest2;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -36,8 +38,9 @@ class IndexController extends Controller
         echo "Here";
         $redis = \Yii::$app->redis;
         $redis_key = "test_redis";
-        echo $redis->incrby($redis_key,rand(1,9));
-
+        $redis_test =  $redis->incrby($redis_key,rand(1,9));
+        $s1 = SwooleTest::find()->asArray()->all(); ;
+        $s2 = SwooleTest2::find()->asArray()->all(); ;
         $client = ClientBuilder::create()->setHosts(['127.0.0.1:9200'])->build();
 
         $pa =
@@ -57,7 +60,11 @@ class IndexController extends Controller
             ];
         $search_return = json_decode(json_encode($client->search($pa)),true);
 
-        print_R($search_return);
+        //print_R($search_return);
+
+        $return  = ( ['es'=>$search_return,'redis'=>$redis_test,'db'=>['s1'=>$s1,'s2'=>$s2]]);
+        print_R($return);
+
         //return $this->render('index');
     }
 }
